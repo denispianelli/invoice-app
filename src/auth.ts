@@ -1,69 +1,69 @@
 import NextAuth from 'next-auth';
 import { authConfig } from './auth.config';
-import db from './db/prisma';
 import bcrypt from 'bcryptjs';
-
 import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
 import GitHub from 'next-auth/providers/github';
+import { sql } from '@vercel/postgres';
+import type { User } from '@/lib/definitions';
+import PostgresAdapter from '@auth/pg-adapter';
+import { Pool } from '@neondatabase/serverless';
 
-import { PrismaAdapter } from '@auth/prisma-adapter';
-import { User, PrismaClient } from '@prisma/client';
-
-globalThis.prisma ??= new PrismaClient();
-
-async function getUser(email: string): Promise<User | null> {
+async function getUser(email: string): Promise<User | undefined> {
   try {
-    const user = await db.user.findUnique({ where: { email } });
+    const user = await sql<User>`SELECT * FROM users WHERE email = ${email}`;
 
-    return user;
+    return user.rows[0];
   } catch (error) {
     console.error(error);
     throw new Error('Failed to fetch user');
   }
 }
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  ...authConfig,
-  adapter: PrismaAdapter(globalThis.prisma),
-  session: { strategy: 'jwt' },
-  providers: [
-    Credentials({
-      async authorize(credentials) {
-        const { email, password } = credentials;
-        const user = await getUser(email as string);
+export const { handlers, auth, signIn, signOut } = NextAuth(() => {
+  const pool = new Pool({ connectionString: process.env.POSTGRES_URL });
+  return {
+    ...authConfig,
+    session: { strategy: 'jwt' },
+    adapter: PostgresAdapter(pool),
+    providers: [
+      Credentials({
+        async authorize(credentials) {
+          const { email, password } = credentials;
+          const user = await getUser(email as string);
 
-        if (!user) return null;
+          if (!user) return null;
 
-        const isValidPassword =
-          user.password &&
-          (await bcrypt.compare(password as string, user.password));
+          const isValidPassword =
+            user.password &&
+            (await bcrypt.compare(password as string, user.password));
 
-        if (isValidPassword) return user;
+          if (isValidPassword) return user;
 
-        return null;
+          return null;
+        },
+      }),
+      Google({
+        authorization:
+          'https://accounts.google.com/o/oauth2/auth/authorize?response_type=code&prompt=login',
+        allowDangerousEmailAccountLinking: true,
+      }),
+      GitHub({
+        allowDangerousEmailAccountLinking: true,
+      }),
+    ],
+    callbacks: {
+      jwt({ token, user }) {
+        if (user) {
+          // User is available during sign-in
+          token.id = user.id;
+        }
+        return token;
       },
-    }),
-    Google({
-      authorization:
-        'https://accounts.google.com/o/oauth2/auth/authorize?response_type=code&prompt=login',
-      allowDangerousEmailAccountLinking: true,
-    }),
-    GitHub({
-      allowDangerousEmailAccountLinking: true,
-    }),
-  ],
-  callbacks: {
-    jwt({ token, user }) {
-      if (user) {
-        // User is available during sign-in
-        token.id = user.id;
-      }
-      return token;
+      session({ session, token }) {
+        session.user.id = token.id as string;
+        return session;
+      },
     },
-    session({ session, token }) {
-      session.user.id = token.id as string;
-      return session;
-    },
-  },
+  };
 });

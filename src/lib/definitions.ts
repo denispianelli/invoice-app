@@ -1,8 +1,12 @@
 export type User = {
   id: string;
-  email: string | undefined;
   name: string | null;
   firstname: string | null;
   lastname: string | null;
+  email: string;
+  email_verfied: boolean | null;
+  password: string | null;
+  otp: string | null;
+  otp_expires: Date | null;
   image: string | null;
 };
