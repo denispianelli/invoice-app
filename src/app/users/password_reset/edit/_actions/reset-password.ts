@@ -1,6 +1,7 @@
 'use server';
 
-import db from '@/db/prisma';
+import { User } from '@/lib/definitions';
+import { sql } from '@vercel/postgres';
 import bcrypt from 'bcryptjs';
 import { notFound } from 'next/navigation';
 
@@ -14,11 +15,8 @@ export async function resetPassword(resetPasswordForm: ResetPasswordForm) {
   const { email, newPassword, confirmPassword } = resetPasswordForm;
 
   try {
-    const user = await db.user.findUnique({
-      where: {
-        email,
-      },
-    });
+    const result = await sql<User>`SELECT * FROM users WHERE email = ${email}`;
+    const user = result.rows[0];
 
     if (!user) {
       notFound();
@@ -34,17 +32,7 @@ export async function resetPassword(resetPasswordForm: ResetPasswordForm) {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    await db.user.update({
-      where: {
-        email,
-      },
-      data: {
-        password: hashedPassword,
-        emailVerified: true,
-        otp: null,
-        otp_expires: null,
-      },
-    });
+    await sql<User>`UPDATE users SET password = ${hashedPassword}, email_verified = true, otp = null, otp_expires = null WHERE email = ${email}`;
 
     return {
       message: 'Your password has been successfully updated.',

@@ -4,7 +4,7 @@ export type User = {
   firstname: string | null;
   lastname: string | null;
   email: string;
-  email_verfied: boolean | null;
+  email_verified: boolean | null;
   password: string | null;
   otp: string | null;
   otp_expires: Date | null;

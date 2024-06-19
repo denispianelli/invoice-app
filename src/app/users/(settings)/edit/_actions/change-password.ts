@@ -1,8 +1,9 @@
 'use server';
+import { sql } from '@vercel/postgres';
 
-import db from '@/db/prisma';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import bcrypt from 'bcryptjs';
+import { User } from '@/lib/definitions';
 
 type ChangePasswordForm = {
   currentPassword: string;
@@ -17,9 +18,8 @@ export async function changePassword(
   const { currentPassword, newPassword, confirmPassword } = changePasswordForm;
 
   try {
-    const user = await db.user.findUnique({
-      where: { id },
-    });
+    const result = await sql<User>`SELECT * FROM users WHERE id = ${id}`;
+    const user = result.rows[0];
     if (!user) return notFound();
     const isValidPassword =
       user.password && (await bcrypt.compare(currentPassword, user.password));
@@ -38,14 +38,8 @@ export async function changePassword(
       };
     }
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await db.user.update({
-      where: {
-        id,
-      },
-      data: {
-        password: hashedPassword,
-      },
-    });
+
+    await sql<User>`UPDATE users SET password = ${hashedPassword} WHERE id = ${id}`;
   } catch (error) {
     return {
       message: 'Database Error: Failed to update password.',

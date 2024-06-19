@@ -1,26 +1,18 @@
 import 'server-only';
 
 import { auth } from '@/auth';
-import db from '@/db/prisma';
+import { sql } from '@vercel/postgres';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
+import { User } from './definitions';
 
 export const getUser = cache(async () => {
   try {
     const session = await auth();
     if (!session) return null;
-    const data = await db.user.findUnique({
-      where: { email: session?.user?.email ?? undefined },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        firstname: true,
-        lastname: true,
-        image: true,
-      },
-    });
-    const user = data;
+    const result =
+      await sql<User>`SELECT id, email, name, firstname, lastname, image FROM users WHERE email = ${session?.user?.email}`;
+    const user = result.rows[0];
     return user;
   } catch (error) {
     console.error(error);

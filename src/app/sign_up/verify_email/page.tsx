@@ -1,7 +1,8 @@
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { VerifyEmailForm } from './_components/verify-email-form';
-import db from '@/db/prisma';
+import { sql } from '@vercel/postgres';
+import { User } from '@/lib/definitions';
 
 export default async function Page({
   searchParams,
@@ -13,19 +14,15 @@ export default async function Page({
   const session = await auth();
 
   const email = searchParams?.email;
-  console.log('email:', email);
 
   if (session || !email) {
     redirect('/');
   }
 
-  const user = await db.user.findUnique({
-    where: {
-      email,
-    },
-  });
+  const result = await sql<User>`SELECT * FROM users WHERE email = ${email}`;
+  const user = result.rows[0];
 
-  if (!user || user.emailVerified) {
+  if (!user || user.email_verified) {
     redirect('/');
   }
 

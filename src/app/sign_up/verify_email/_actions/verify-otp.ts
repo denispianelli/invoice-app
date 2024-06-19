@@ -4,8 +4,9 @@ import { headers } from 'next/headers';
 import { Ratelimit } from '@upstash/ratelimit';
 import { kv } from '@vercel/kv';
 import { z } from 'zod';
-import db from '@/db/prisma';
 import bcrypt from 'bcryptjs';
+import { sql } from '@vercel/postgres';
+import { User } from '@/lib/definitions';
 
 const FormSchema = z.object({
   email: z.string().email(),
@@ -57,11 +58,8 @@ export async function verifyOTP(prevState: verifyOTPState, formData: FormData) {
 
     const { email, pin } = validatedFields.data;
 
-    const user = await db.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
+    const result = await sql<User>`SELECT * FROM users WHERE email = ${email}`;
+    const user = result.rows[0];
 
     if (!user) {
       return {
@@ -71,7 +69,7 @@ export async function verifyOTP(prevState: verifyOTPState, formData: FormData) {
       };
     }
 
-    if (user.emailVerified) {
+    if (user.email_verified) {
       return {
         errorMessage: 'User already verified',
       };
@@ -105,16 +103,7 @@ export async function verifyOTP(prevState: verifyOTPState, formData: FormData) {
       };
     }
 
-    await db.user.update({
-      where: {
-        email: email,
-      },
-      data: {
-        otp: null,
-        otp_expires: null,
-        emailVerified: true,
-      },
-    });
+    await sql<User>`UPDATE users SET otp = NULL, otp_expires = NULL, email_verified = true WHERE email = ${email}`;
   } catch (error) {
     throw error;
   }

@@ -2,8 +2,9 @@
 
 import { AuthError } from 'next-auth';
 import { signIn } from '@/auth';
-import db from '@/db/prisma';
+import { sql } from '@vercel/postgres';
 import { redirect } from 'next/navigation';
+import { User } from '@/lib/definitions';
 
 type LoginForm = {
   email: string;
@@ -14,17 +15,14 @@ export async function authenticate(loginForm: LoginForm) {
   const { email } = loginForm;
 
   try {
-    const user = await db.user.findUnique({
-      where: {
-        email: email as string,
-      },
-    });
+    const result = await sql<User>`SELECT * FROM users WHERE email = ${email}`;
+    const user = result.rows[0];
 
     if (!user) {
       return { message: 'Invalid credentials' };
     }
 
-    if (user.emailVerified === false) {
+    if (user.email_verified === false) {
       redirect(`/sign_up/verify_email?email=${encodeURIComponent(email)}`);
     }
 

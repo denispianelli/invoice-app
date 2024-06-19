@@ -1,14 +1,14 @@
 'use server';
 
-import db from '@/db/prisma';
 import { notFound } from 'next/navigation';
 import { utapi } from '@/app/server/uploadthing';
+import { sql } from '@vercel/postgres';
+import { User } from '@/lib/definitions';
 
 export async function updateUserAvatar(id: string, imageUrl: string) {
   try {
-    const user = await db.user.findUnique({
-      where: { id },
-    });
+    const result = await sql<User>`SELECT * FROM users WHERE id = ${id}`;
+    const user = result.rows[0];
 
     if (!user) {
       return notFound();
@@ -21,12 +21,7 @@ export async function updateUserAvatar(id: string, imageUrl: string) {
       await utapi.deleteFiles(fileKey);
     }
 
-    await db.user.update({
-      where: { id },
-      data: {
-        image: imageUrl,
-      },
-    });
+    await sql<User>`UPDATE users SET image = ${imageUrl} WHERE id = ${id}`;
   } catch (error) {
     console.error('Error updating user:', error);
   }
@@ -36,10 +31,8 @@ export async function updateUserAvatar(id: string, imageUrl: string) {
 
 export async function removeUserAvatar(id: string) {
   try {
-    const user = await db.user.findUnique({
-      where: { id },
-      select: { image: true },
-    });
+    const result = await sql<User>`SELECT image FROM users WHERE id = ${id}`;
+    const user = result.rows[0];
 
     if (!user) {
       return notFound();
@@ -55,10 +48,7 @@ export async function removeUserAvatar(id: string) {
 
     await utapi.deleteFiles(fileKey);
 
-    await db.user.update({
-      where: { id },
-      data: { image: null },
-    });
+    await sql<User>`UPDATE users SET image = NULL WHERE id = ${id}`;
   } catch (error) {
     console.error('Error removing user avatar:', error);
   }

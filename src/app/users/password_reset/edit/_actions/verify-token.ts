@@ -1,14 +1,12 @@
-import db from '@/db/prisma';
+import { sql } from '@vercel/postgres';
 import { notFound } from 'next/navigation';
 import bcrypt from 'bcryptjs';
+import { User } from '@/lib/definitions';
 
 export default async function verifyToken(token: string, email: string) {
   try {
-    const user = await db.user.findUnique({
-      where: {
-        email,
-      },
-    });
+    const result = await sql<User>`SELECT * FROM users WHERE email = ${email}`;
+    const user = result.rows[0];
 
     if (!user) notFound();
 

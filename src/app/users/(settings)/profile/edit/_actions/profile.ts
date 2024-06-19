@@ -1,8 +1,9 @@
 'use server';
 
-import db from '@/db/prisma';
 import { notFound } from 'next/navigation';
 import { isEmailAvailable } from '@/app/sign_up/_actions/sign-up';
+import { sql } from '@vercel/postgres';
+import { User } from '@/lib/definitions';
 
 type ProfileForm = {
   firstname?: string;
@@ -15,9 +16,8 @@ export async function updateProfile(profileForm: ProfileForm, id: string) {
 
   const isEmailFree = await isEmailAvailable(email);
 
-  const user = await db.user.findUnique({
-    where: { id },
-  });
+  const result = await sql<User>`SELECT * FROM users WHERE id = ${id}`;
+  const user = result.rows[0];
 
   if (!user) return notFound();
 
@@ -25,12 +25,5 @@ export async function updateProfile(profileForm: ProfileForm, id: string) {
     return { message: 'Email already in use' };
   }
 
-  await db.user.update({
-    where: { id },
-    data: {
-      firstname,
-      lastname,
-      email,
-    },
-  });
+  await sql<User>`UPDATE users SET firstname = ${firstname}, lastname = ${lastname}, email = ${email} WHERE id = ${id}`;
 }

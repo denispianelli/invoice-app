@@ -1,17 +1,15 @@
 'use server';
 
-import db from '@/db/prisma';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { sendMail } from '@/services/email-service';
+import { sql } from '@vercel/postgres';
+import { User } from '@/lib/definitions';
 
 export async function resendOtp(email: string) {
   try {
-    const user = await db.user.findUnique({
-      where: {
-        email,
-      },
-    });
+    const result = await sql<User>`SELECT * FROM users WHERE email = ${email}`;
+    const user = result.rows[0];
 
     if (!user) {
       return {
@@ -19,7 +17,7 @@ export async function resendOtp(email: string) {
       };
     }
 
-    if (user.emailVerified) {
+    if (user.email_verified) {
       return {
         message: 'Email already verified',
       };
@@ -29,16 +27,9 @@ export async function resendOtp(email: string) {
     const hashedOtp = await bcrypt.hash(otp.toString(), 10);
     const otpExpires = new Date();
     otpExpires.setHours(otpExpires.getHours() + 24);
+    const otpExpiresString = otpExpires.toISOString();
 
-    await db.user.update({
-      where: {
-        email,
-      },
-      data: {
-        otp: hashedOtp,
-        otp_expires: otpExpires,
-      },
-    });
+    await sql<User>`UPDATE users SET otp = ${hashedOtp}, otp_expires = ${otpExpiresString} WHERE email = ${email}`;
 
     await sendMail(otp.toString(), email);
 

@@ -1,9 +1,10 @@
 'use server';
 
-import db from '@/db/prisma';
+import { sql } from '@vercel/postgres';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcryptjs';
 import { sendPasswordResetEmail } from '@/services/email-service';
+import { User } from '@/lib/definitions';
 
 type ForgotPasswordForm = {
   email: string;
@@ -12,14 +13,9 @@ type ForgotPasswordForm = {
 export async function forgotPassword(forgotPasswordForm: ForgotPasswordForm) {
   const { email } = forgotPasswordForm;
 
-  const user = await db.user.findUnique({
-    where: {
-      email,
-    },
-    select: {
-      email: true,
-    },
-  });
+  const result =
+    await sql<User>`SELECT email FROM users WHERE email = ${email}`;
+  const user = result.rows[0];
 
   if (!user) {
     return {
@@ -32,16 +28,9 @@ export async function forgotPassword(forgotPasswordForm: ForgotPasswordForm) {
   const hashedToken = await bcrypt.hash(token, 10);
   const tokenExpiry = new Date();
   tokenExpiry.setHours(tokenExpiry.getHours() + 10);
+  const tokenExpiryString = tokenExpiry.toISOString();
 
-  await db.user.update({
-    where: {
-      email,
-    },
-    data: {
-      otp: hashedToken,
-      otp_expires: tokenExpiry,
-    },
-  });
+  await sql<User>`UPDATE users SET otp = ${hashedToken}, otp_expires = ${tokenExpiryString} WHERE email = ${email}`;
 
   await sendPasswordResetEmail(email, token);
 
