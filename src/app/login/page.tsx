@@ -10,7 +10,7 @@ export default async function Page() {
   }
 
   return (
-    <main className="h-[calc(100vh-64px)]">
+    <main className="grid h-[calc(100vh-64px)] place-content-center">
       <LoginForm />
     </main>
   );

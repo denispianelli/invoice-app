@@ -14,7 +14,7 @@ const config = {
   theme: {
     screens: {
       sm: '640px',
-      md: '920px',
+      md: '768px',
       lg: '1080px',
       xl: '1280px',
       '2xl': '1536px',
@@ -31,6 +31,16 @@ const config = {
         sans: ['var(--font-sans)', ...fontFamily.sans],
       },
       colors: {
+        first: 'hsl(252, 94%, 67%)',
+        second: 'hsl(252, 100%, 73%)',
+        third: 'hsl(233, 31%, 17%)',
+        fourth: 'hsl(233, 30%, 21%)',
+        fifth: 'hsl(231, 73%, 93%)',
+        sixth: 'hsl(231, 20%, 61%)',
+        seventh: 'hsl(231, 37%, 63%)',
+        eighth: 'hsl(228, 29%, 7%)',
+        ninth: 'hsl(0, 80%, 63%)',
+        tenth: 'hsl(0, 100%, 80%)',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

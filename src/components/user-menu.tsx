@@ -20,8 +20,8 @@ export async function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="secondary" size="icon" className="rounded-full">
-          <Avatar>
+        <Button variant="secondary" className="size-8 rounded-full lg:size-10">
+          <Avatar className="size-8 lg:size-10">
             <AvatarImage
               src={user?.image ?? undefined}
               alt={user?.name ?? undefined}
