@@ -8,14 +8,15 @@ export default async function Page({
 }: {
   searchParams?: { status?: string };
 }) {
-  const status = searchParams?.status || 'draft.pending.paid';
+  const status = searchParams?.status || '';
+  console.log('status:', status);
   const user = await getUser();
 
   if (!user) redirect('/login');
 
   const invoices = await fetchInvoices({ id: user.id });
   return (
-    <main className="mx-6 my-8 lg:mx-auto lg:w-[730px]">
+    <main className="mx-6 my-8 md:mx-12 md:my-[61px] lg:mx-auto lg:my-[77px] lg:w-[730px]">
       <Invoices invoices={invoices} status={status} />
     </main>
   );

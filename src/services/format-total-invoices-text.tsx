@@ -5,7 +5,7 @@ export default function formatTotalInvoiceText(
   filters: string[],
 ) {
   if (filteredInvoices.length === 0) {
-    return 'No invoices';
+    return 'invoices';
   }
 
   if (filters.length === 0) {
@@ -33,9 +33,11 @@ export default function formatTotalInvoiceText(
   filterCounts.forEach(({ filter, count }, index) => {
     if (count > 0) {
       if (filterText) filterText += ' and ';
-      filterText += `${count} ${filter} invoice${count > 1 ? 's' : ''}`;
+      filterText += `${count} ${filter}`;
     }
   });
+
+  filterText += ' invoices';
 
   return (
     filterText ||

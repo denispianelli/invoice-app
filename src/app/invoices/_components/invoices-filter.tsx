@@ -34,7 +34,7 @@ export default function InvoicesFilter() {
     if (filters.length) {
       params.set('status', filters.join('.'));
     } else {
-      params.delete('status');
+      params.set('status', 'draft.pending.paid');
     }
 
     replace(`${pathname}?${params.toString()}`);
