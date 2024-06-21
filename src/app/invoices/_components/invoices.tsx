@@ -23,7 +23,12 @@ export default function Invoices({
       <div className="flex justify-between">
         <div>
           <h1 className="heading-m">Invoices</h1>
-          <p className="body text-sixth">{numberOfInvoices}</p>
+          <p className="body text-sixth">
+            <span className="hidden md:inline">
+              {filteredInvoices.length > 1 ? 'There are ' : 'There is '}
+            </span>
+            {numberOfInvoices}
+          </p>
         </div>
         <div>
           <InvoicesFilter />
