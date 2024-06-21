@@ -81,6 +81,7 @@ const invoices = [
 		total: 1800.90,
     sender_address_id: addresses[0].id,
     client_address_id: addresses[1].id,
+		user_id: users[0].id,
   },
   {
     id: 'XM9141',
@@ -94,6 +95,7 @@ const invoices = [
 		total: 556.00,
     sender_address_id: addresses[0].id,
     client_address_id: addresses[2].id,
+		user_id: users[0].id,
   },
   {
     id: 'RG0314',
@@ -107,6 +109,7 @@ const invoices = [
 		total: 14002.33,
     sender_address_id: addresses[0].id,
     client_address_id: addresses[3].id,
+		user_id: users[0].id,
   },
   {
     id: 'RT2080',
@@ -120,6 +123,7 @@ const invoices = [
 		total: 102.04,
     sender_address_id: addresses[0].id,
     client_address_id: addresses[4].id,
+		user_id: users[0].id,
   },
   {
     id: 'AA1449',
@@ -133,6 +137,7 @@ const invoices = [
 		total: 4032.33,
     sender_address_id: addresses[0].id,
     client_address_id: addresses[5].id,
+		user_id: users[0].id,
   },
   {
     id: 'TY9141',
@@ -146,6 +151,7 @@ const invoices = [
 		total: 6155.91,
     sender_address_id: addresses[0].id,
     client_address_id: addresses[6].id,
+		user_id: users[0].id,
   },
 	{
 		id: 'FV2353',
@@ -158,6 +164,7 @@ const invoices = [
     status: 'draft',
 		total: 3102.04,
     sender_address_id: addresses[0].id,
+		user_id: users[0].id,
 	}
 ];
 
