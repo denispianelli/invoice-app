@@ -14,13 +14,13 @@ export function ModeToggleButton() {
 
   return (
     <Button
-      className="group"
+      className="group relative overflow-hidden transition-all"
       onClick={handleModeSwitch}
       variant="ghost"
       size="icon"
     >
       <svg
-        className="hidden dark:block "
+        className="hidden dark:block"
         width="20"
         height="20"
         xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +33,7 @@ export function ModeToggleButton() {
         />
       </svg>
       <svg
-        className="block dark:hidden"
+        className="dark:hidden"
         width="20"
         height="20"
         xmlns="http://www.w3.org/2000/svg"
