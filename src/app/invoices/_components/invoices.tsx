@@ -2,6 +2,7 @@
 
 import { Invoice } from '@/lib/definitions';
 import InvoicesFilter from './invoices-filter';
+import formatTotalInvoiceText from '@/services/format-total-invoices-text';
 
 export default function Invoices({
   invoices,
@@ -14,49 +15,6 @@ export default function Invoices({
   const filteredInvoices = invoices.filter((invoice) =>
     filters.includes(invoice.status),
   );
-
-  function formatTotalInvoiceText(
-    filteredInvoices: Invoice[],
-    filters: string[],
-  ) {
-    if (filteredInvoices.length === 0) {
-      return 'No invoices';
-    }
-
-    if (filters.length === 0) {
-      return `${filteredInvoices.length} invoice${filteredInvoices.length > 1 ? 's' : ''}`;
-    }
-
-    // If all possible filters are applied, just show the total number of invoices
-    const allPossibleFilters = ['draft', 'pending', 'paid'];
-    const areAllFiltersApplied = allPossibleFilters.every((filter) =>
-      filters.includes(filter),
-    );
-
-    if (areAllFiltersApplied) {
-      return `${filteredInvoices.length} invoice${filteredInvoices.length > 1 ? 's' : ''}`;
-    }
-
-    let filterText = '';
-    const filterCounts = filters.map((filter) => {
-      const count = filteredInvoices.filter(
-        (invoice) => invoice.status === filter,
-      ).length;
-      return { filter, count };
-    });
-
-    filterCounts.forEach(({ filter, count }, index) => {
-      if (count > 0) {
-        if (filterText) filterText += ' and ';
-        filterText += `${count} ${filter} invoice${count > 1 ? 's' : ''}`;
-      }
-    });
-
-    return (
-      filterText ||
-      `${filteredInvoices.length} invoice${filteredInvoices.length > 1 ? 's' : ''}`
-    );
-  }
 
   const numberOfInvoices = formatTotalInvoiceText(filteredInvoices, filters);
   console.log('numberOfInvoices:', numberOfInvoices);
