@@ -40,6 +40,7 @@ async function seedAddresses(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
+		await client.sql`DROP TYPE IF EXISTS address_type CASCADE;`
     const createType = await client.sql`
 		CREATE TYPE address_type AS ENUM ('sender', 'client');
 		`;
@@ -83,6 +84,8 @@ async function seedAddresses(client) {
 
 async function seedInvoices(client) {
   try {
+		await client.sql`DROP TYPE IF EXISTS invoice_status CASCADE;`
+
     const createType = await client.sql`
 		CREATE TYPE invoice_status AS ENUM ('draft', 'pending', 'paid');
 		`;
@@ -101,7 +104,8 @@ async function seedInvoices(client) {
 			status invoice_status NOT NULL DEFAULT 'draft',
 			total NUMERIC(10, 2),
 			sender_address_id UUID REFERENCES addresses(id),
-			client_address_id UUID REFERENCES addresses(id)
+			client_address_id UUID REFERENCES addresses(id),
+			user_id text REFERENCES users(id)
 		);
 		`;
 
@@ -110,8 +114,8 @@ async function seedInvoices(client) {
     const insertedInvoices = await Promise.all(
       invoices.map(
         (invoice) => client.sql`
-				INSERT INTO invoices (id, created_at, payment_due, description, payment_terms, client_name, client_email, status, total, sender_address_id, client_address_id)
-				VALUES (${invoice.id}, ${invoice.createdAt}, ${invoice.paymentDue}, ${invoice.description}, ${invoice.paymentTerms}, ${invoice.clientName}, ${invoice.clientEmail}, ${invoice.status}, ${invoice.total}, ${invoice.sender_address_id}, ${invoice.client_address_id});`,
+				INSERT INTO invoices (id, created_at, payment_due, description, payment_terms, client_name, client_email, status, total, sender_address_id, client_address_id, user_id)
+				VALUES (${invoice.id}, ${invoice.createdAt}, ${invoice.paymentDue}, ${invoice.description}, ${invoice.paymentTerms}, ${invoice.clientName}, ${invoice.clientEmail}, ${invoice.status}, ${invoice.total}, ${invoice.sender_address_id}, ${invoice.client_address_id}, ${invoice.user_id});`,
       ),
     );
 
@@ -166,9 +170,23 @@ async function seedItems(client) {
   }
 }
 
+async function dropTables(client) {
+	try {
+		await client.sql`DROP TABLE IF EXISTS items`;
+		await client.sql`DROP TABLE IF EXISTS invoices`;
+		await client.sql`DROP TABLE IF EXISTS addresses`;
+		console.log('Dropped tables');
+	} catch (error) {
+		console.error('Error dropping tables:', error);
+		throw error;
+	}
+
+}
+
 async function main() {
   const client = await db.connect();
 
+	await dropTables(client);
   await seedUsers(client);
   await seedAddresses(client);
   await seedInvoices(client);
