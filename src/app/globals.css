@@ -28,7 +28,7 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --success: 123 81% 31%;
+    --success: 159 66.5% 52%;
     --success-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
@@ -99,10 +99,10 @@
   }
 
   .body {
-    @apply text-[13px] font-bold leading-[18px] -tracking-[0.1px];
+    @apply text-[13px] font-medium leading-[18px] -tracking-[0.1px];
   }
 
   .body-variant {
-    @apply text-[13px] font-bold leading-[15px] -tracking-[0.25px];
+    @apply text-[13px] font-medium leading-[15px] -tracking-[0.25px];
   }
 }
