@@ -4,7 +4,8 @@ import { Invoice } from '@/lib/definitions';
 import InvoicesFilter from './invoices-filter';
 import formatTotalInvoiceText from '@/services/format-total-invoices-text';
 import { Button } from '@/components/ui/button';
-import InvoiceCard from './invoice-card';
+import Link from 'next/link';
+import InvoiceInfos from './invoice-card';
 
 export default function Invoices({
   invoices,
@@ -20,7 +21,7 @@ export default function Invoices({
 
   const numberOfInvoices = formatTotalInvoiceText(filteredInvoices, filters);
   return (
-    <div>
+    <>
       <div className="mb-8 flex justify-between md:mb-[55px] lg:mb-16">
         <div>
           <h1 className="heading-m md:heading-l">Invoices</h1>
@@ -59,8 +60,10 @@ export default function Invoices({
         </div>
       </div>{' '}
       {filteredInvoices.map((invoice) => (
-        <InvoiceCard key={invoice.id} invoice={invoice} />
+        <Link key={invoice.id} href={`/invoices/${invoice.id}`}>
+          <InvoiceInfos invoice={invoice} />
+        </Link>
       ))}
-    </div>
+    </>
   );
 }
