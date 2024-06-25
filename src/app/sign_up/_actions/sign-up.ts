@@ -21,7 +21,6 @@ export async function signup(signUpForm: SignupForm) {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const otp = crypto.randomInt(100000, 999999);
-  console.log('signup ~ otp:', otp);
 
   const hashedOtp = await bcrypt.hash(otp.toString(), 10);
   const otpExpires = new Date();
