@@ -143,7 +143,7 @@ async function seedItems(client) {
 			quantity INT NOT NULL,
 			price NUMERIC(10, 2) NOT NULL,
 			total NUMERIC(10, 2) NOT NULL,
-			invoice_id VARCHAR(6) REFERENCES invoices(id)
+			invoice_id VARCHAR(6) REFERENCES invoices(id) ON DELETE CASCADE
 		);
 		`;
 
@@ -171,16 +171,15 @@ async function seedItems(client) {
 }
 
 async function dropTables(client) {
-	try {
-		await client.sql`DROP TABLE IF EXISTS items`;
-		await client.sql`DROP TABLE IF EXISTS invoices`;
-		await client.sql`DROP TABLE IF EXISTS addresses`;
-		console.log('Dropped tables');
-	} catch (error) {
-		console.error('Error dropping tables:', error);
-		throw error;
-	}
-
+  try {
+    await client.sql`DROP TABLE IF EXISTS items CASCADE;`;
+    await client.sql`DROP TABLE IF EXISTS invoices CASCADE;`;
+    await client.sql`DROP TABLE IF EXISTS addresses CASCADE;`;
+    console.log('Dropped tables');
+  } catch (error) {
+    console.error('Error dropping tables:', error);
+    throw error;
+  }
 }
 
 async function main() {
