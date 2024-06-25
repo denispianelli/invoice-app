@@ -191,7 +191,7 @@ const items = [
     quantity: 2,
     price: 200.0,
     total: 400.0,
-		invoice_id: invoices[2].id,
+		invoice_id: invoices[1].id,
   },
   {
     id: '8267964b-0c18-4513-84aa-f4444435bbff',
