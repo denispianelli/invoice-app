@@ -1,13 +1,13 @@
 import { Badge } from '@/components/ui/badge';
+import { InvoiceCard } from '@/components/ui/invoice-card';
 import { Invoice } from '@/lib/definitions';
+import InvoiceId from '@/components/ui/invoice-id';
+import InvoiceBadge from '@/components/ui/invoice-badge';
 
-export default function InvoiceCard({ invoice }: { invoice: Invoice }) {
+export default function InvoiceInfos({ invoice }: { invoice: Invoice }) {
   return (
-    <div className="my-4 grid grid-cols-2 items-center gap-6 rounded-[8px] bg-white p-6 dark:bg-third md:grid md:grid-cols-[15%,60%,20%,5%] md:place-content-center md:gap-0 md:shadow-sm">
-      <p className="body-variant text-[15px] font-bold text-foreground">
-        <span className="text-seventh">#</span>
-        {invoice.id}
-      </p>
+    <InvoiceCard className="grid grid-cols-2 items-center gap-6 md:grid md:grid-cols-[15%,60%,20%,5%] md:place-content-center md:gap-0">
+      <InvoiceId id={invoice.id} />
       <h2 className="body justify-self-end font-medium text-[#858BB2] dark:text-foreground md:hidden">
         {invoice.client_name}
       </h2>
@@ -32,9 +32,7 @@ export default function InvoiceCard({ invoice }: { invoice: Invoice }) {
             .replace('£', '£ ')}
         </p>
       </div>
-      <Badge className="justify-self-end" variant={invoice.status}>
-        {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
-      </Badge>
+      <InvoiceBadge status={invoice.status} />
       <svg
         className="mx-auto hidden md:block"
         width="7"
@@ -49,6 +47,6 @@ export default function InvoiceCard({ invoice }: { invoice: Invoice }) {
           fillRule="evenodd"
         />
       </svg>
-    </div>
+    </InvoiceCard>
   );
 }
