@@ -1,0 +1,10 @@
+.scroll-container {
+  scrollbar-width: auto;
+  scrollbar-color: #dfe3fa #dfe3fa00;
+  scrollbar-gutter: stable;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: #dfe3fa;
+  border-radius: 4px;
+}
