@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as LabelPrimitive from '@radix-ui/react-label';
 import { Slot } from '@radix-ui/react-slot';
 import {
+  Control,
   Controller,
   ControllerProps,
   FieldPath,
@@ -93,7 +94,11 @@ const FormLabel = React.forwardRef<
   return (
     <Label
       ref={ref}
-      className={cn(error && 'text-destructive', className)}
+      className={cn(
+        'body text-[13px] text-seventh dark:text-sixth md:dark:text-fifth',
+        error && 'text-destructive',
+        className,
+      )}
       htmlFor={formItemId}
       {...props}
     />
@@ -156,7 +161,7 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn('text-xs font-medium text-destructive', className)}
+      className={cn('text-[10px] font-semibold text-destructive', className)}
       {...props}
     >
       {body}
@@ -176,7 +181,7 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
       <input
         type={type}
         className={cn(
-          'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+          'body-variant flex h-12 w-full rounded-md border border-input px-5 pb-[15px] pt-[18px] text-[15px] font-bold ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-first focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-third',
           { 'border-destructive': error },
           className,
         )}
@@ -188,6 +193,87 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
 );
 FormInput.displayName = 'FormInput';
 
+const NumericInput = React.forwardRef<HTMLInputElement, FormInputProps>(
+  ({ className, ...props }, ref) => {
+    const { error } = useFormField();
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (
+        !/^\d+$/.test(e.key) &&
+        e.key !== 'Backspace' &&
+        e.key !== 'Delete' &&
+        e.key !== 'ArrowLeft' &&
+        e.key !== 'ArrowRight' &&
+        e.key !== 'ArrowUp' &&
+        e.key !== 'ArrowDown' &&
+        e.key !== 'Home' &&
+        e.key != 'Tab' &&
+        e.key !== '.' &&
+        e.key !== 'End'
+      ) {
+        e.preventDefault();
+      }
+    };
+
+    return (
+      <input
+        {...props}
+        ref={ref}
+        className={cn(
+          'body-variant flex h-12 w-full rounded-md border border-input pb-[15px] pt-[18px] text-center text-[15px] font-bold ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-third',
+          { 'border-destructive': error },
+          className,
+        )}
+        onKeyDown={handleKeyDown}
+      />
+    );
+  },
+);
+
+NumericInput.displayName = 'NumericInput';
+
+export interface FormFieldWrapperProps {
+  control: Control<any>;
+  name: string;
+  label: string;
+  placeholder?: string;
+  disabled?: boolean;
+  type?: string;
+  className?: string;
+}
+
+const FormFieldWrapper: React.FC<FormFieldWrapperProps> = ({
+  control,
+  name,
+  label,
+  placeholder,
+  disabled,
+  type = 'text',
+  className,
+}) => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className={className}>
+          <div className="flex justify-between">
+            <FormLabel>{label}</FormLabel>
+            <FormMessage />
+          </div>
+          <FormControl>
+            <FormInput
+              type={type}
+              placeholder={placeholder}
+              disabled={disabled}
+              {...field}
+            />
+          </FormControl>
+        </FormItem>
+      )}
+    />
+  );
+};
+
 export {
   useFormField,
   Form,
@@ -198,4 +284,6 @@ export {
   FormMessage,
   FormField,
   FormInput,
+  FormFieldWrapper,
+  NumericInput,
 };
