@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import InvoiceInfos from './invoice-card';
 import { User } from '@/lib/definitions';
-import { fetchFilteredInvoices, fetchInvoices } from '@/lib/data';
+import { fetchFilteredInvoices } from '@/lib/data';
 import IllustrationEmpty from './illustration-empty';
 import InvoiceListHeader from './invoice-list-header';
 
