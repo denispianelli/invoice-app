@@ -1,6 +1,7 @@
 'use server';
 
 import { sql } from '@vercel/postgres';
+import { revalidatePath } from 'next/cache';
 
 export async function deleteInvoice({ id }: { id: string }) {
   try {
@@ -11,6 +12,8 @@ export async function deleteInvoice({ id }: { id: string }) {
     console.error('Database Error:', error);
     throw new Error('Failed to delete invoice data.');
   }
+
+  revalidatePath('/invoices');
 }
 
 export async function markInvoiceAsPaid({ id }: { id: string }) {
@@ -22,4 +25,6 @@ export async function markInvoiceAsPaid({ id }: { id: string }) {
     console.error('Database Error:', error);
     throw new Error('Failed to mark invoice as paid.');
   }
+
+  revalidatePath('/invoices');
 }
