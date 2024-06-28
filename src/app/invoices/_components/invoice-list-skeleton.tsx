@@ -4,7 +4,7 @@ import NewInvoice from './new-invoice';
 
 export default function InvoiceListSkeleton() {
   return (
-    <div className="grid">
+    <div className="grid max-h-screen">
       <div className="flex h-[51px] justify-between md:mb-[55px] lg:mb-16">
         <div>
           <h1 className="heading-m md:heading-l">Invoices</h1>
@@ -16,7 +16,6 @@ export default function InvoiceListSkeleton() {
         </div>
       </div>
       <div className="grid gap-4">
-        <Skeleton className="h-[134px] min-w-full md:h-[88px]" />
         <Skeleton className="h-[134px] min-w-full md:h-[88px]" />
         <Skeleton className="h-[134px] min-w-full md:h-[88px]" />
         <Skeleton className="h-[134px] min-w-full md:h-[88px]" />
