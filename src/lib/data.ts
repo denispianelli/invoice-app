@@ -55,7 +55,7 @@ export async function fetchInvoice({ id }: { id: string }) {
 
 export async function fetchFilteredInvoices(id: string, statuses?: string[]) {
   try {
-    await new Promise((resolve) => setTimeout(resolve, 10000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     let query = `SELECT * FROM invoices WHERE user_id = $1`;
     let params = [id];
