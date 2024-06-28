@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -34,7 +36,7 @@ export default function InvoicesFilter() {
     if (filters.length) {
       params.set('status', filters.join('.'));
     } else {
-      params.set('status', 'draft.pending.paid');
+      params.delete('status');
     }
 
     replace(`${pathname}?${params.toString()}`);
