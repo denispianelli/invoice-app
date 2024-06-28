@@ -1,6 +1,6 @@
 import IllustrationEmpty from './illustration-empty';
 
-export default function noInvoices() {
+export default function NoInvoices() {
   return (
     <div className="flex flex-col items-center">
       <IllustrationEmpty />

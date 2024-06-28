@@ -2,8 +2,8 @@ import Link from 'next/link';
 import InvoiceInfos from './invoice-card';
 import { User } from '@/lib/definitions';
 import { fetchFilteredInvoices } from '@/lib/data';
-import IllustrationEmpty from './illustration-empty';
 import InvoiceListHeader from './invoice-list-header';
+import NoInvoices from './no-invoices';
 
 export default async function InvoiceList({
   user,
@@ -24,7 +24,7 @@ export default async function InvoiceList({
           <InvoiceInfos invoice={invoice} />
         </Link>
       ))}
-      {!invoices.length && <IllustrationEmpty />}
+      {!invoices.length && <NoInvoices />}
     </>
   );
 }
