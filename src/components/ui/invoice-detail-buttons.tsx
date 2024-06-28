@@ -4,6 +4,17 @@ import { deleteInvoice, markInvoiceAsPaid } from '@/lib/actions';
 import { Button } from './button';
 import { useRouter } from 'next/navigation';
 import { useToast } from './use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from './alert-dialog';
 
 export default function InvoiceDetailButtons({ id }: { id: string }) {
   const { toast } = useToast();
@@ -23,7 +34,7 @@ export default function InvoiceDetailButtons({ id }: { id: string }) {
     await deleteInvoice({ id });
     toast({
       title: 'Invoice Deleted',
-      description: `Invoice ${id} has been deleted.`,
+      description: `Invoice #${id} has been deleted.`,
       variant: 'success',
     });
     router.push('/invoices');
@@ -33,9 +44,26 @@ export default function InvoiceDetailButtons({ id }: { id: string }) {
       <Button className="w-[73px]" variant={'two'}>
         Edit
       </Button>
-      <Button onClick={handleDelete} className="w-[89px]" variant={'four'}>
-        Delete
-      </Button>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button className="w-[89px]" variant={'four'}>
+            Delete
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="w-[327px] md:w-[480px]">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are your sure you want to delete invoice #{id}? This action cannot
+              be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <Button onClick={handleUpdate} className="w-[149px]" variant={'one'}>
         Mark as Paid
       </Button>
