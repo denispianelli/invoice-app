@@ -139,10 +139,10 @@ async function seedItems(client) {
     const createTable = await client.sql`
 		CREATE TABLE IF NOT EXISTS items (
 			id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-			name VARCHAR(255) NOT NULL,
-			quantity INT NOT NULL,
-			price NUMERIC(10, 2) NOT NULL,
-			total NUMERIC(10, 2) NOT NULL,
+			name VARCHAR(255),
+			quantity INT,
+			price NUMERIC(10, 2) ,
+			total NUMERIC(10, 2) NOT NULL DEFAULT 0.00,
 			invoice_id VARCHAR(6) REFERENCES invoices(id) ON DELETE CASCADE
 		);
 		`;
