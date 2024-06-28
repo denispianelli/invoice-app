@@ -46,10 +46,34 @@ export async function fetchInvoice({ id }: { id: string }) {
       GROUP BY invoices.id, sender.id, client.id;
     `;
 
-    console.log('data:', data);
     return data.rows[0];
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch invoice data.');
+  }
+}
+
+export async function fetchFilteredInvoices(id: string, statuses?: string[]) {
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+
+    let query = `SELECT * FROM invoices WHERE user_id = $1`;
+    let params = [id];
+
+    console.log('statuses:', statuses);
+
+    if (statuses && statuses.length > 0) {
+      query += ` AND status IN (${statuses.map((status, index) => `$${index + 2}`).join(', ')});`;
+      params = [...params, ...statuses];
+    }
+
+    console.log('query:', query);
+
+    const data = await sql.query<Invoice>(query, params);
+
+    return data.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoices data.');
   }
 }
