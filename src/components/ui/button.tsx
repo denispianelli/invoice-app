@@ -12,6 +12,8 @@ const buttonVariants = cva(
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
         one: 'bg-first body-variant text-white font-bold hover:bg-second rounded-[24px]',
         two: 'rounded-[24px] bg-[#F9FAFE] body-variant text-seventh font-bold hover:bg-[#DFE3FA] dark:bg-fourth dark:text-fifth dark:hover:bg-white dark:hover:text-fifth text-[15px]',
+        three:
+          'rounded-[24px] bg-[#373B53] body-variant text-sixth font-bold hover:bg-eighth dark:text-fifth dark:hover:bg-third  dark:hover:bg-third dark:hover:text-fifth text-[15px]',
         four: 'rounded-[24px] bg-ninth body-variant text-white font-bold hover:bg-tenth text-[15px]',
         destructive:
           'bg-destructive text-destructive-foreground hover:bg-destructive/90',
