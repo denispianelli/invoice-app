@@ -8,12 +8,10 @@ import InvoiceDetailButtons from '@/components/ui/invoice-detail-buttons';
 
 export default async function Page({ params }: { params?: { id?: string } }) {
   const { id } = params ?? {};
-  console.log('Page ~ id:', id);
 
   if (!id) return notFound();
 
   const invoice: InvoiceDetail = await fetchInvoice({ id });
-  console.log('Page ~ invoice:', invoice);
 
   if (!invoice) return notFound();
 
