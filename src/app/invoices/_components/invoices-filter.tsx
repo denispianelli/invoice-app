@@ -1,50 +1,55 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu';
+import { Button } from '@/components/ui/button';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState, useCallback } from 'react';
 
-type Checked = DropdownMenuCheckboxItemProps['checked'];
+type Status = 'draft' | 'pending' | 'paid';
 
 export default function InvoicesFilter() {
   const searchParams = useSearchParams();
-  const status = searchParams.getAll('status').join('.').split('.');
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const [showDraft, setShowDraft] = useState<Checked>(status.includes('draft'));
-  const [showPending, setShowPending] = useState<Checked>(
-    status.includes('pending'),
-  );
-  const [showPaid, setShowPaid] = useState<Checked>(status.includes('paid'));
+  // Extract status filters from URL query params
+  const statusFilters = searchParams.getAll('status') as Status[];
 
-  const handleFilters = useCallback(() => {
+  // State to manage checkbox states
+  const [filters, setFilters] = useState<Record<Status, boolean>>({
+    draft: statusFilters.includes('draft'),
+    pending: statusFilters.includes('pending'),
+    paid: statusFilters.includes('paid'),
+  });
+
+  // Function to handle filter changes
+  const handleFilterChange = (filter: Status, checked: boolean) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [filter]: checked,
+    }));
+  };
+
+  // Effect to update URL query params when filters change
+  useEffect(() => {
     const params = new URLSearchParams(searchParams);
 
-    const filters = [];
-    if (showDraft) filters.push('draft');
-    if (showPending) filters.push('pending');
-    if (showPaid) filters.push('paid');
+    const selectedFilters = Object.entries(filters)
+      .filter(([, checked]) => checked)
+      .map(([filter]) => filter);
 
-    if (filters.length) {
-      params.set('status', filters.join('.'));
+    if (selectedFilters.length) {
+      params.set('status', selectedFilters.join('.'));
     } else {
       params.delete('status');
     }
-
     replace(`${pathname}?${params.toString()}`);
-  }, [showDraft, showPending, showPaid, searchParams, pathname, replace]);
-
-  useEffect(() => {
-    handleFilters();
-  }, [showDraft, showPending, showPaid, handleFilters]);
+  }, [filters, pathname, replace, searchParams]);
 
   return (
     <DropdownMenu>
@@ -74,22 +79,22 @@ export default function InvoicesFilter() {
       <DropdownMenuContent className="w-48">
         <DropdownMenuCheckboxItem
           preventClose
-          checked={showDraft}
-          onCheckedChange={setShowDraft}
+          checked={filters.draft}
+          onCheckedChange={(checked) => handleFilterChange('draft', checked)}
         >
           Draft
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           preventClose
-          checked={showPending}
-          onCheckedChange={setShowPending}
+          checked={filters.pending}
+          onCheckedChange={(checked) => handleFilterChange('pending', checked)}
         >
           Pending
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           preventClose
-          checked={showPaid}
-          onCheckedChange={setShowPaid}
+          checked={filters.paid}
+          onCheckedChange={(checked) => handleFilterChange('paid', checked)}
         >
           Paid
         </DropdownMenuCheckboxItem>
