@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 const DarftItemSchema = z.object({
+  id: z.string().optional(),
   name: z.string(),
   quantity: z.coerce.number(),
   price: z.coerce.number(),
@@ -8,6 +9,7 @@ const DarftItemSchema = z.object({
 });
 
 const ItemSchema = z.object({
+  id: z.string().optional(),
   name: z.string().min(1, 'Required'),
   quantity: z.coerce.number().min(1, 'Required').positive('Must be positive'),
   price: z.coerce.number().min(1, 'Required').positive('Must be positive'),

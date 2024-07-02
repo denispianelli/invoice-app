@@ -68,23 +68,26 @@ export async function createInvoice(invoice: any) {
     return acc + item.total;
   }, 0);
 
-  const senderAddressId = await createAddress(senderAddress);
-  const clientAddressId = await createAddress(clientAddress);
-
   try {
-    await sql`
+    const senderAddressId = await createAddress(senderAddress);
+    const clientAddressId = await createAddress(clientAddress);
+
+    const result = await sql`
 			INSERT INTO invoices (id, created_at, payment_due, description, payment_terms, client_name, client_email, status, total, sender_address_id, client_address_id, user_id)
 			VALUES (${invoiceId}, ${invoiceDate}, ${paymentDue.toDateString()}, ${description}, ${paymentTerms}, ${clientName}, ${clientEmail}, ${status}, ${total}, ${senderAddressId}, ${clientAddressId}, ${user.id})
+			RETURNING id
 			`;
+
+    for (const item of items) {
+      await createItem(item, invoiceId);
+    }
+
+    return result.rows[0].id;
   } catch (error) {
     console.error('createInvoice ~ error:', error);
     return {
       message: 'Database Error: Failed to Create Invoice',
     };
-  }
-
-  for (const item of items) {
-    await createItem(item, invoiceId);
   }
 
   revalidatePath('/invoices');

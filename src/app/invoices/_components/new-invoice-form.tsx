@@ -35,9 +35,12 @@ import { createInvoice } from '../_actions/create-invoice';
 import { DraftSchema, SendSchema } from '../_schemas/invoices-schema';
 import { InvoiceDetail } from '@/lib/definitions';
 import formatLocalDate from '@/lib/utils/format-local-date';
+import { updateInvoice } from '../[id]/_actions/update-invoice';
+import { useToast } from '@/components/ui/use-toast';
 
 export function InvoiceForm({ invoice }: { invoice?: InvoiceDetail }) {
   const [schema, setSchema] = useState(DraftSchema);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof DraftSchema | typeof SendSchema>>({
     resolver: zodResolver(schema),
@@ -95,24 +98,60 @@ export function InvoiceForm({ invoice }: { invoice?: InvoiceDetail }) {
 
   useEffect(() => {
     const items = invoice?.items;
-    console.log('useEffect ~ items:', items);
 
     if (!items) {
       return;
     }
 
-    items.forEach((item, index) => {
+    if (items[0].id === null) {
+      return;
+    }
+
+    items.forEach((item) => {
       append({
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        total: item.total,
+        id: item.id || '',
+        name: item.name || '',
+        quantity: item.quantity || 0,
+        price: item.price || 0,
+        total: item.total || 0,
       });
     });
-  }, [append, invoice]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function onSubmit(data: z.infer<typeof schema>) {
-    await createInvoice(data);
+    if (invoice) {
+      const { id } = invoice;
+      const { client_address_id } = invoice;
+      const { sender_address_id } = invoice;
+      const formData = { ...data, id, client_address_id, sender_address_id };
+
+      toast({
+        title: 'Invoice updated',
+        description: (
+          <p>
+            Your invoice <span className="font-bold">#{id}</span> has been
+            updated successfully
+          </p>
+        ),
+        variant: 'success',
+      });
+
+      await updateInvoice(formData);
+    } else {
+      const invoiceId = await createInvoice(data);
+
+      toast({
+        title: 'Invoice created',
+        description: (
+          <p>
+            Your invoice <span className="font-bold">#{invoiceId}</span> has
+            been created successfully`
+          </p>
+        ),
+        variant: 'success',
+      });
+    }
   }
 
   return (
@@ -172,7 +211,20 @@ export function InvoiceForm({ invoice }: { invoice?: InvoiceDetail }) {
             </h2>
             {fields.map((item, index) => {
               return (
-                <div key={item.id} className="mb-12 grid gap-6">
+                <div key={index} className="mb-12 grid gap-6">
+                  <FormField
+                    control={form.control}
+                    name={`items.${index}.id`}
+                    render={({ field }) => (
+                      <FormItem className="hidden">
+                        <FormLabel>id</FormLabel>
+                        <FormMessage />
+                        <FormControl>
+                          <FormInput type="hidden" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name={`items.${index}.name`}
@@ -281,7 +333,7 @@ export function InvoiceForm({ invoice }: { invoice?: InvoiceDetail }) {
               className="flex w-full items-center justify-center gap-2 rounded-full bg-[#F9FAFE] text-[15px] font-bold text-seventh hover:bg-fifth dark:bg-fourth dark:text-sixth dark:hover:bg-third"
               type="button"
               onClick={() =>
-                append({ name: '', quantity: 0, price: 0, total: 0 })
+                append({ id: '', name: '', quantity: 0, price: 0, total: 0 })
               }
             >
               + Add New Item
@@ -304,9 +356,10 @@ export function InvoiceForm({ invoice }: { invoice?: InvoiceDetail }) {
             variant={'three'}
             type="button"
             onClick={() => {
-              setSchema(DraftSchema);
-              form.setValue('status', 'draft');
-              form.handleSubmit(onSubmit)();
+              Promise.resolve()
+                .then(() => setSchema(DraftSchema))
+                .then(() => form.setValue('status', 'draft'))
+                .then(() => form.handleSubmit(onSubmit)());
             }}
           >
             Save as Draft
@@ -317,9 +370,10 @@ export function InvoiceForm({ invoice }: { invoice?: InvoiceDetail }) {
           variant={'one'}
           type="button"
           onClick={() => {
-            setSchema(SendSchema);
-            form.setValue('status', 'pending');
-            form.handleSubmit(onSubmit)();
+            Promise.resolve()
+              .then(() => setSchema(SendSchema))
+              .then(() => form.setValue('status', 'pending'))
+              .then(() => form.handleSubmit(onSubmit)());
           }}
         >
           {invoice ? 'Save Changes' : 'Save & Send'}

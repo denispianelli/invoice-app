@@ -56,7 +56,7 @@ export default function InvoiceDetailButtons({
             Delete
           </Button>
         </AlertDialogTrigger>
-        <AlertDialogContent className="w-[327px] bg-white p-12 md:w-[480px]">
+        <AlertDialogContent className="w-[327px] bg-white p-12 dark:bg-third md:w-[480px]">
           <AlertDialogHeader>
             <AlertDialogTitle className="heading-m text-[24px]">
               Confirm Deletion
@@ -67,12 +67,12 @@ export default function InvoiceDetailButtons({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="body-variant h-[48px] w-[90px] rounded-[24px] border-none bg-[#F9FAFE] font-bold text-seventh hover:bg-[#DFE3FA] hover:text-seventh">
+            <AlertDialogCancel className="body-variant h-[48px] w-[90px] rounded-[24px] border-none bg-[#F9FAFE] font-bold text-seventh hover:bg-[#DFE3FA] hover:text-seventh dark:bg-fourth dark:text-fifth dark:hover:bg-white dark:hover:text-fifth">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="body-variant h-[48px] w-[90px] rounded-[24px] bg-ninth font-bold hover:bg-tenth"
+              className="body-variant h-[48px] w-[90px] rounded-[24px] bg-ninth font-bold hover:bg-tenth dark:text-white"
             >
               Delete
             </AlertDialogAction>
