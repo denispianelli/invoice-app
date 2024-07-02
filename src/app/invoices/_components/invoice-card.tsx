@@ -6,12 +6,12 @@ import InvoiceBadge from '@/components/ui/invoice-badge';
 
 export default function InvoiceInfos({ invoice }: { invoice: Invoice }) {
   return (
-    <InvoiceCard className="grid grid-cols-2 items-center gap-6 md:grid md:grid-cols-[15%,60%,20%,5%] md:place-content-center md:gap-0">
+    <InvoiceCard className="grid grid-cols-2 items-center gap-6 outline-1 outline-first hover:outline md:grid md:grid-cols-[15%,60%,20%,5%] md:place-content-center md:gap-0">
       <InvoiceId id={invoice.id} />
       <h2 className="body justify-self-end font-medium text-[#858BB2] dark:text-foreground md:hidden">
         {invoice.client_name}
       </h2>
-      <div className="grid items-center justify-center gap-2 md:grid-cols-3">
+      <div className="grid items-center justify-center gap-2 justify-self-start md:grid-cols-3 md:justify-self-auto">
         <p className="body-variant font-medium text-seventh dark:text-fifth">
           <span className="text-sixth dark:text-fifth">Due&nbsp;</span>
           {invoice.payment_due.toLocaleDateString('en-GB', {
