@@ -13,6 +13,7 @@ export const getUser = cache(async () => {
     const result =
       await sql<User>`SELECT id, email, name, firstname, lastname, image FROM users WHERE email = ${session?.user?.email}`;
     const user = result.rows[0];
+
     return user;
   } catch (error) {
     console.error(error);
