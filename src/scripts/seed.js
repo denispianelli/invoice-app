@@ -1,7 +1,7 @@
 const { db } = require('@vercel/postgres');
 const {
   users,
-	addresses,
+  addresses,
   items,
   invoices,
 } = require('../lib/placeholder-data.js');
@@ -9,9 +9,9 @@ const bcrypt = require('bcryptjs');
 
 async function seedUsers(client) {
   try {
-		await client.sql`
+    await client.sql`
 		DELETE FROM users WHERE id = ${users[0].id};
-		`
+		`;
 
     console.log(`Deleted user with id ${users[0].id}`);
 
@@ -40,7 +40,7 @@ async function seedAddresses(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-		await client.sql`DROP TYPE IF EXISTS address_type CASCADE;`
+    await client.sql`DROP TYPE IF EXISTS address_type CASCADE;`;
     const createType = await client.sql`
 		CREATE TYPE address_type AS ENUM ('sender', 'client');
 		`;
@@ -72,8 +72,8 @@ async function seedAddresses(client) {
     console.log(`Seeded ${insertedAddresses.length} addresses`);
 
     return {
-			createType,
-			createTable,
+      createType,
+      createTable,
       addresses: insertedAddresses,
     };
   } catch (error) {
@@ -84,7 +84,7 @@ async function seedAddresses(client) {
 
 async function seedInvoices(client) {
   try {
-		await client.sql`DROP TYPE IF EXISTS invoice_status CASCADE;`
+    await client.sql`DROP TYPE IF EXISTS invoice_status CASCADE;`;
 
     const createType = await client.sql`
 		CREATE TYPE invoice_status AS ENUM ('draft', 'pending', 'paid');
@@ -122,8 +122,8 @@ async function seedInvoices(client) {
     console.log(`Seeded ${insertedInvoices.length} invoices`);
 
     return {
-			createType,
-			createTable,
+      createType,
+      createTable,
       invoices: insertedInvoices,
     };
   } catch (error) {
@@ -161,7 +161,7 @@ async function seedItems(client) {
     console.log(`Seeded ${insertedItems.length} items`);
 
     return {
-			createTable,
+      createTable,
       items: insertedItems,
     };
   } catch (error) {
@@ -185,7 +185,7 @@ async function dropTables(client) {
 async function main() {
   const client = await db.connect();
 
-	await dropTables(client);
+  await dropTables(client);
   await seedUsers(client);
   await seedAddresses(client);
   await seedInvoices(client);
