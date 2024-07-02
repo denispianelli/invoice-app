@@ -109,7 +109,7 @@ export function InvoiceForm({ invoice }: { invoice?: InvoiceDetail }) {
         total: item.total,
       });
     });
-  }, [invoice]);
+  }, [append, invoice]);
 
   async function onSubmit(data: z.infer<typeof schema>) {
     await createInvoice(data);
