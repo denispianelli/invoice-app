@@ -123,8 +123,8 @@ const DropdownMenuCheckboxItem = React.forwardRef<
       checked={checked}
       {...props}
     >
-      <span className="bg-fifth border-first checked:bg-first absolute left-2 flex size-4 items-center justify-center rounded-sm group-focus:border">
-        <DropdownMenuPrimitive.ItemIndicator className="bg-first grid size-4 place-content-center rounded-sm">
+      <span className="absolute left-2 flex size-4 items-center justify-center rounded-sm border-first bg-fifth checked:bg-first group-focus:border">
+        <DropdownMenuPrimitive.ItemIndicator className="grid size-4 place-content-center rounded-sm bg-first">
           <svg width="10" height="8" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M1.5 4.5l2.124 2.124L8.97 1.28"
