@@ -9,12 +9,12 @@ export async function Header() {
   const session = await auth();
 
   return (
-    <header className="sticky top-0 z-50 flex h-[72px] w-full justify-between bg-[#373B53] md:h-[80px] lg:fixed lg:h-screen lg:w-[103px] lg:flex-col lg:items-center lg:rounded-r-2xl">
+    <header className="sticky top-0 z-40 flex h-[72px] w-full justify-between bg-[#373B53] md:h-[80px] lg:fixed lg:h-screen lg:w-[103px] lg:flex-col lg:items-center lg:rounded-r-2xl">
       <Link
-        className="bg-first relative grid w-[72px] place-content-center overflow-hidden rounded-r-2xl lg:h-[103px] lg:w-full"
+        className="relative grid w-[72px] place-content-center overflow-hidden rounded-r-2xl bg-first lg:h-[103px] lg:w-full"
         href={'/'}
       >
-        <div className="bg-second absolute bottom-0 h-1/2 w-[72px] rounded-tl-2xl lg:w-full " />
+        <div className="absolute bottom-0 h-1/2 w-[72px] rounded-tl-2xl bg-second lg:w-full " />
         <svg
           className="z-10 lg:h-10 lg:w-10"
           xmlns="http://www.w3.org/2000/svg"
