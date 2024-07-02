@@ -53,19 +53,63 @@ export async function fetchInvoice({ id }: { id: string }) {
   }
 }
 
-export async function fetchFilteredInvoices(id: string, statuses?: string[]) {
+const ITEMS_PER_PAGE = 6;
+export async function fetchFilteredInvoices(
+  id: string,
+  currentPage: number,
+  statuses?: string[],
+) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   try {
-    let query = `SELECT * FROM invoices WHERE user_id = $1`;
-    let params = [id];
+    let query = `
+		SELECT * 
+		FROM invoices 
+		WHERE user_id = $1
+		`;
+    let params: string[] = [id];
 
     if (statuses && statuses.length > 0) {
-      query += ` AND status IN (${statuses.map((status, index) => `$${index + 2}`).join(', ')});`;
+      query += ` AND status IN (${statuses.map((status, index) => `$${index + 2}`).join(', ')})
+			ORDER BY created_at ASC
+		  LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+			`;
       params = [...params, ...statuses];
+    } else {
+      query += `
+			ORDER BY created_at ASC
+			LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset};
+			`;
     }
 
     const data = await sql.query<Invoice>(query, params);
 
     return data.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoices data.');
+  }
+}
+
+export async function fetchInvoicesPages(id: string, filters?: string[]) {
+  try {
+    let query = `
+		SELECT COUNT(*)
+		FROM invoices
+		WHERE user_id = $1
+		`;
+    let params = [id];
+
+    if (filters && filters.length > 0) {
+      query += ` AND status IN (${filters.map((status, index) => `$${index + 2}`).join(', ')})
+			`;
+      params = [...params, ...filters];
+    }
+
+    const result = await sql.query<{ count: string }>(query, params);
+    const invoices = result.rows[0];
+    const totalPages = Math.ceil(Number(invoices.count) / ITEMS_PER_PAGE);
+
+    return { invoices, totalPages };
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch invoices data.');
