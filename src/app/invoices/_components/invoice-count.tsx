@@ -1,27 +1,23 @@
-import { Invoice } from '@/lib/definitions';
-import formatTotalInvoiceText from '@/services/format-total-invoices-text';
-
 export default function InvoiceCount({
-  filteredInvoices,
+  count,
   filters,
 }: {
-  filteredInvoices: Invoice[];
+  count: number;
   filters?: string[];
 }) {
-  const numberOfInvoices = formatTotalInvoiceText(filteredInvoices, filters);
   return (
     <p className="body text-[12px] font-medium text-sixth md:text-[13px]">
       <span className="hidden md:inline">
-        {filteredInvoices.length === 0
-          ? 'There is no '
-          : filteredInvoices.length > 1
-            ? 'There are '
-            : 'There is '}
+        {count === 1 && 'There is '}
+        {count > 1 && 'There are '}
       </span>
-      <span className="md:hidden">
-        {filteredInvoices.length === 0 && 'No '}
-      </span>
-      {numberOfInvoices}
+      <span>
+        {count === 0 && 'No '}
+        {count >= 1 && `${count} `}
+        {count >= 1 && !filters && 'total'}
+        {count >= 1 && filters && `${filters.join(' and ')}`}
+      </span>{' '}
+      <span>{`invoice${count === 1 ? '' : 's'}`}</span>
     </p>
   );
 }
