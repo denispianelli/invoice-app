@@ -69,7 +69,7 @@ export default function LoginForm() {
   }
 
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card className="mx-auto w-[320px]">
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>
@@ -132,10 +132,6 @@ export default function LoginForm() {
               <LoginButton />
             </form>
           </Form>
-          <div className="mx-auto my-4 flex w-full items-center justify-evenly text-sm font-semibold text-gray-600 before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400">
-            or continue with
-          </div>
-          <OAuthProviders />
         </div>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{' '}
@@ -152,7 +148,7 @@ function LoginButton() {
   const { isSubmitting } = useFormState();
 
   return (
-    <Button type="submit" className="w-full" aria-disabled={isSubmitting}>
+    <Button type="submit" className="mt-2 w-full" aria-disabled={isSubmitting}>
       {isSubmitting ? (
         <>
           <Loader2 className="mr-2 size-6 animate-spin" />
