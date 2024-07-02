@@ -2,8 +2,6 @@ import NextAuth from 'next-auth';
 import { authConfig } from './auth.config';
 import bcrypt from 'bcryptjs';
 import Credentials from 'next-auth/providers/credentials';
-import Google from 'next-auth/providers/google';
-import GitHub from 'next-auth/providers/github';
 import { sql } from '@vercel/postgres';
 import type { User } from '@/lib/definitions';
 import PostgresAdapter from '@auth/pg-adapter';
@@ -42,14 +40,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
 
           return null;
         },
-      }),
-      Google({
-        authorization:
-          'https://accounts.google.com/o/oauth2/auth/authorize?response_type=code&prompt=login',
-        allowDangerousEmailAccountLinking: true,
-      }),
-      GitHub({
-        allowDangerousEmailAccountLinking: true,
       }),
     ],
     callbacks: {
