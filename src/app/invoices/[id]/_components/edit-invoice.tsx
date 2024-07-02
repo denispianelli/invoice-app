@@ -11,6 +11,7 @@ import {
 import styles from '@/components/ui/home.module.css';
 import ArrowLeft from './arrow-left';
 import { InvoiceDetail } from '@/lib/definitions';
+import { InvoiceForm } from '../../_components/new-invoice-form';
 
 export default function EditInvoice({ invoice }: { invoice: InvoiceDetail }) {
   return (
@@ -40,6 +41,7 @@ export default function EditInvoice({ invoice }: { invoice: InvoiceDetail }) {
           </SheetTitle>
           <SheetDescription />
         </SheetHeader>
+        <InvoiceForm invoice={invoice} />
       </SheetContent>
     </Sheet>
   );

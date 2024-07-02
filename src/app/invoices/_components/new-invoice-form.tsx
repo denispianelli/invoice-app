@@ -33,26 +33,30 @@ import {
 import { SheetClose } from '@/components/ui/sheet';
 import { createInvoice } from '../_actions/create-invoice';
 import { DraftSchema, SendSchema } from '../_schemas/invoices-schema';
+import { InvoiceDetail } from '@/lib/definitions';
+import formatLocalDate from '@/lib/utils/format-local-date';
 
-export function InvoiceForm() {
+export function InvoiceForm({ invoice }: { invoice?: InvoiceDetail }) {
   const [schema, setSchema] = useState(DraftSchema);
 
   const form = useForm<z.infer<typeof DraftSchema | typeof SendSchema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      'sender-street': '',
-      'sender-city': '',
-      'sender-postcode': '',
-      'sender-country': '',
-      'client-name': '',
-      'client-email': '',
-      'client-street': '',
-      'client-city': '',
-      'client-postcode': '',
-      'client-country': '',
-      'invoice-date': new Date().toISOString().split('T')[0],
-      'payment-terms': '1',
-      'project-description': '',
+      'sender-street': invoice?.sender_street || '',
+      'sender-city': invoice?.sender_city || '',
+      'sender-postcode': invoice?.sender_postcode || '',
+      'sender-country': invoice?.sender_country || '',
+      'client-name': invoice?.client_name || '',
+      'client-email': invoice?.client_email || '',
+      'client-street': invoice?.client_street || '',
+      'client-city': invoice?.client_city || '',
+      'client-postcode': invoice?.client_postcode || '',
+      'client-country': invoice?.client_country || '',
+      'invoice-date': formatLocalDate(
+        invoice ? invoice.created_at : new Date(),
+      ),
+      'payment-terms': invoice?.payment_terms.toString() || '1',
+      'project-description': invoice?.description || '',
       status: 'draft',
     },
   });
@@ -88,6 +92,24 @@ export function InvoiceForm() {
       }
     });
   }, [items, form, fields]);
+
+  useEffect(() => {
+    const items = invoice?.items;
+    console.log('useEffect ~ items:', items);
+
+    if (!items) {
+      return;
+    }
+
+    items.forEach((item, index) => {
+      append({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        total: item.total,
+      });
+    });
+  }, [invoice]);
 
   async function onSubmit(data: z.infer<typeof schema>) {
     await createInvoice(data);
@@ -271,23 +293,26 @@ export function InvoiceForm() {
         </form>
       </Form>
       <div className="fixed bottom-0 left-0 z-50 mb-[91px] h-[64px] w-full bg-gradient-to-b from-black/0 to-black/10 md:absolute md:w-[616px]" />
-      <div className="fixed bottom-0 left-0 z-50 flex h-[91px] w-full items-center justify-center gap-2 bg-white dark:bg-third md:absolute md:w-[614px] md:rounded-r-[20px]">
+      <div className="fixed bottom-0 left-0 z-50 flex h-[91px] w-full items-center justify-center gap-2 bg-white dark:bg-third md:absolute md:w-[614px] md:justify-end md:rounded-r-[20px] md:pr-[56px]">
         <SheetClose asChild>
           <Button variant={'three'} type="button" onClick={() => form.reset()}>
-            Discard
+            {invoice ? 'Cancel' : 'Discard'}
           </Button>
         </SheetClose>
-        <Button
-          variant={'three'}
-          type="button"
-          onClick={() => {
-            setSchema(DraftSchema);
-            form.setValue('status', 'draft');
-            form.handleSubmit(onSubmit)();
-          }}
-        >
-          Save as Draft
-        </Button>
+        {!invoice && (
+          <Button
+            variant={'three'}
+            type="button"
+            onClick={() => {
+              setSchema(DraftSchema);
+              form.setValue('status', 'draft');
+              form.handleSubmit(onSubmit)();
+            }}
+          >
+            Save as Draft
+          </Button>
+        )}
+
         <Button
           variant={'one'}
           type="button"
@@ -297,7 +322,7 @@ export function InvoiceForm() {
             form.handleSubmit(onSubmit)();
           }}
         >
-          Save & Send
+          {invoice ? 'Save Changes' : 'Save & Send'}
         </Button>
       </div>
     </div>
