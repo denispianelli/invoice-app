@@ -15,10 +15,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from './alert-dialog';
+import EditInvoice from '@/app/invoices/[id]/_components/edit-invoice';
+import { InvoiceDetail } from '@/lib/definitions';
 
-export default function InvoiceDetailButtons({ id }: { id: string }) {
+export default function InvoiceDetailButtons({
+  invoice,
+}: {
+  invoice: InvoiceDetail;
+}) {
   const { toast } = useToast();
   const router = useRouter();
+
+  const { id } = invoice;
 
   const handleUpdate = async () => {
     await markInvoiceAsPaid({ id });
@@ -41,26 +49,33 @@ export default function InvoiceDetailButtons({ id }: { id: string }) {
   };
   return (
     <>
-      <Button className="w-[73px]" variant={'two'}>
-        Edit
-      </Button>
+      <EditInvoice invoice={invoice} />
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button className="w-[89px]" variant={'four'}>
             Delete
           </Button>
         </AlertDialogTrigger>
-        <AlertDialogContent className="w-[327px] md:w-[480px]">
+        <AlertDialogContent className="w-[327px] bg-white p-12 md:w-[480px]">
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="heading-m text-[24px]">
+              Confirm Deletion
+            </AlertDialogTitle>
+            <AlertDialogDescription className="body font-medium text-sixth">
               Are your sure you want to delete invoice #{id}? This action cannot
               be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+            <AlertDialogCancel className="body-variant h-[48px] w-[90px] rounded-[24px] border-none bg-[#F9FAFE] font-bold text-seventh hover:bg-[#DFE3FA] hover:text-seventh">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="body-variant h-[48px] w-[90px] rounded-[24px] bg-ninth font-bold hover:bg-tenth"
+            >
+              Delete
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
