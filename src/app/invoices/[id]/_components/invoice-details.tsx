@@ -22,7 +22,7 @@ export default function InvoiceDetails({
           <InvoiceBadge status={invoice.status} />
         </div>
         <div className="hidden gap-2 md:flex">
-          <InvoiceDetailButtons id={invoice.id} />
+          <InvoiceDetailButtons invoice={invoice} />
         </div>
       </InvoiceCard>
       <InvoiceCard className="mb-[56px] drop-shadow-md md:p-8 md:drop-shadow-sm">
