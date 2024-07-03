@@ -141,6 +141,17 @@ export function SignUpForm() {
                   </FormItem>
                 )}
               />
+              <div className="text-muted-foreground">
+                <p className="mt-2 text-xs">Your password must:</p>
+                <ul className="list-inside list-disc text-xs">
+                  <li className="ml-2">Be at least 8 characters long</li>
+                  <li className="ml-2">Contain at least one letter</li>
+                  <li className="ml-2">Contain at least one number</li>
+                  <li className="ml-2">
+                    Contain at least one special character
+                  </li>
+                </ul>
+              </div>
               <SignUpButton isEmailFree={isEmailFree} />
             </form>
           </Form>
