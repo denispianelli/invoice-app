@@ -49,7 +49,9 @@ export default function NewInvoice() {
               className="body-variant mx-6 mb-6 flex w-fit items-center gap-6 pl-0 font-bold md:hidden"
             >
               <ArrowLeft />
-              Go back
+              <p className="body-variant h-[12px] text-[15px] font-bold">
+                Go back
+              </p>{' '}
             </Button>
           </SheetClose>
           <SheetTitle className="text-left">New Invoice</SheetTitle>
