@@ -162,6 +162,7 @@ function SignUpButton({ isEmailFree }: { isEmailFree: boolean }) {
   return (
     <Button
       type="submit"
+      variant={'one'}
       className="mt-2 w-full"
       aria-disabled={isSubmitting || !isEmailFree}
     >
