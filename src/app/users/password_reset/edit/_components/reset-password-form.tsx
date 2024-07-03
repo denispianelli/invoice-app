@@ -159,7 +159,12 @@ function ResetPasswordButton() {
   const { isSubmitting } = useFormState();
 
   return (
-    <Button type="submit" className="w-full" aria-disabled={isSubmitting}>
+    <Button
+      variant={'one'}
+      type="submit"
+      className="w-full"
+      aria-disabled={isSubmitting}
+    >
       Submit
     </Button>
   );
