@@ -95,7 +95,7 @@ function ForgotPasswordButton() {
   const { isSubmitting } = useFormState();
 
   return (
-    <Button type="submit" aria-disabled={isSubmitting}>
+    <Button variant={'one'} type="submit" aria-disabled={isSubmitting}>
       {isSubmitting ? (
         <Loader2 className="size-6 animate-spin"></Loader2>
       ) : (
