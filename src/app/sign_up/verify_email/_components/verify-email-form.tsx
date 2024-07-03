@@ -252,7 +252,7 @@ export function VerifyEmailForm() {
 function VerifyOtpButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending}>
+    <Button variant={'one'} type="submit" disabled={pending}>
       {pending ? (
         <div className="flex gap-1">
           <Loader2 size={16} /> Please wait
