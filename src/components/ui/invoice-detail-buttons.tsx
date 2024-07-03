@@ -79,9 +79,11 @@ export default function InvoiceDetailButtons({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <Button onClick={handleUpdate} className="w-[149px]" variant={'one'}>
-        Mark as Paid
-      </Button>
+      {invoice.status === 'pending' && (
+        <Button onClick={handleUpdate} className="w-[149px]" variant={'one'}>
+          Mark as Paid
+        </Button>
+      )}
     </>
   );
 }
