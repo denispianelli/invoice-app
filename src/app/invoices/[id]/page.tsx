@@ -18,12 +18,9 @@ export default async function Page({ params }: { params?: { id?: string } }) {
   return (
     <>
       <main className="mx-6 mb-[150px] mt-[33px] lg:mx-auto lg:mb-0 lg:mt-[65px] lg:w-[730px]">
-        <Link
-          className="body-variant flex items-center gap-6 font-bold"
-          href="/invoices"
-        >
+        <Link className="flex items-center gap-6 font-bold" href="/invoices">
           <ArrowLeft />
-          Go back
+          <p className="body-variant h-[12px] text-[15px] font-bold">Go back</p>
         </Link>
         <InvoiceDetails invoice={invoice} />
       </main>
