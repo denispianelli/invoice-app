@@ -169,7 +169,12 @@ function ChangePasswordButton() {
   const { isSubmitting } = useFormState();
 
   return (
-    <Button type="submit" aria-disabled={isSubmitting}>
+    <Button
+      variant={'three'}
+      className="text-white"
+      type="submit"
+      aria-disabled={isSubmitting}
+    >
       {isSubmitting ? (
         <>
           <Loader2 className="mr-2 size-6 animate-spin" />
