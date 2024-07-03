@@ -92,16 +92,12 @@ export function UserAvatarForm({ user }: { user: User }) {
         <CardFooter className="border-t px-6 py-4">
           <div className="flex gap-2">
             <UploadButton
-              className="ut-button:h-10 ut-button:bg-primary ut-button:px-4 ut-button:py-2 ut-button:text-sm ut-button:text-primary-foreground ut-button:hover:bg-primary/90"
+              className="font-bold ut-button:h-10 ut-button:rounded-[24px] ut-button:bg-[#373B53] ut-button:px-4 ut-button:py-2 ut-button:text-[15px] ut-button:text-white ut-button:hover:bg-primary/90"
               endpoint="imageUploader"
               onClientUploadComplete={handleUploadClick}
               onUploadError={handleUploadError}
             />
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleRemoveClick}
-            >
+            <Button type="button" variant="four" onClick={handleRemoveClick}>
               Remove
             </Button>
           </div>
