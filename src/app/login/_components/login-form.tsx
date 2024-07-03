@@ -148,7 +148,12 @@ function LoginButton() {
   const { isSubmitting } = useFormState();
 
   return (
-    <Button type="submit" className="mt-2 w-full" aria-disabled={isSubmitting}>
+    <Button
+      variant={'one'}
+      type="submit"
+      className="mt-2 w-full"
+      aria-disabled={isSubmitting}
+    >
       {isSubmitting ? (
         <>
           <Loader2 className="mr-2 size-6 animate-spin" />
