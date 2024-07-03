@@ -130,6 +130,8 @@ function UpdateProfileButton() {
 
   return (
     <Button
+      variant={'three'}
+      className="text-white"
       type="submit"
       aria-disabled={isSubmitting}
       onClick={() => isSubmitting && router.refresh()}
